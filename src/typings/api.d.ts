@@ -9,3 +9,4 @@
 import '../types/api/common'
 import '../types/api/auth'
 import '../types/api/user'
+import '../types/api/role'

@@ -112,8 +112,6 @@
         current: 1,
         size: 20,
         ...defaultFilter.value
-        // pageNum: 1,
-        // pageSize: 20
       },
       // 自定义分页字段映射，同时需要在 apiParams 中配置字段名
       // paginationKey: {

@@ -126,6 +126,7 @@
   import { formatMenuTitle } from '@/router/utils/utils'
   import { Role } from '@/mock/temp/formData'
   import { ButtonMoreItem } from '@/components/core/forms/art-button-more/index.vue'
+  import { RoleService } from '@/api/roleApi'
 
   defineOptions({ name: 'Role' })
 
@@ -184,13 +185,16 @@
     enable: true
   })
 
-  const roleList = ref<Role[]>([])
+  const roleList = ref<Api.Role.RoleListData>()
   onMounted(() => {
-    // getTableData()
+    getTableData()
   })
 
-  // const getTableData = () => {
-  // }
+  const getTableData = async () => {
+    roleList.value = await RoleService.getRoleList({
+      username: 'admin'
+    })
+  }
 
   const dialogType = ref('add')
 
