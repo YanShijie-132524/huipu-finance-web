@@ -9,7 +9,7 @@
         </ElCol>
         <ElCol :xs="24" :sm="12" :lg="6">
           <ElFormItem>
-            <ElButton v-ripple>搜索</ElButton>
+            <ElButton @click="selcet()" v-ripple>搜索</ElButton>
             <ElButton @click="showDialog('add')" v-ripple>新增角色</ElButton>
           </ElFormItem>
         </ElCol>
@@ -18,20 +18,25 @@
     <ArtTable :data="roleList">
       <template #default>
         <ElTableColumn label="角色名称" prop="roleName" />
-        <ElTableColumn label="角色编码" prop="roleCode" />
-        <ElTableColumn label="描述" prop="des" />
-        <ElTableColumn label="启用" prop="enable">
+        <ElTableColumn label="状态" prop="status">
           <template #default="scope">
-            <ElTag :type="scope.row.enable ? 'primary' : 'info'">
-              {{ scope.row.enable ? '启用' : '禁用' }}
+            <ElTag :type="!scope.row.status ? 'primary' : 'info'">
+              {{ !scope.row.status ? '启用' : '禁用' }}
             </ElTag>
           </template>
         </ElTableColumn>
-        <ElTableColumn label="创建时间" prop="date">
+        <ElTableColumn label="创建时间" prop="createTime">
           <template #default="scope">
-            {{ formatDate(scope.row.date) }}
+            {{ scope.row.createTime }}
           </template>
         </ElTableColumn>
+        <ElTableColumn label="创建人" prop="createBy" />
+        <ElTableColumn label="更新时间" prop="updateTime">
+          <template #default="scope">
+            {{ scope.row.createTime }}
+          </template>
+        </ElTableColumn>
+        <ElTableColumn label="更新人" prop="updateBy" />
         <ElTableColumn fixed="right" label="操作" width="100px">
           <template #default="scope">
             <ElRow>
@@ -60,14 +65,20 @@
         <ElFormItem label="角色名称" prop="roleName">
           <ElInput v-model="form.roleName" />
         </ElFormItem>
-        <ElFormItem label="角色编码" prop="roleCode">
-          <ElInput v-model="form.roleCode" />
+        <ElFormItem label="创建人" prop="createBy">
+          <ElInput v-model="form.createBy" />
         </ElFormItem>
-        <ElFormItem label="描述" prop="roleStatus">
-          <ElInput v-model="form.des" type="textarea" :rows="3" />
+        <ElFormItem label="创建时间" prop="createTime">
+          <ElInput v-model="form.createTime" />
         </ElFormItem>
-        <ElFormItem label="启用">
-          <ElSwitch v-model="form.enable" />
+        <ElFormItem label="更新人" prop="updateBy">
+          <ElInput v-model="form.updateBy" />
+        </ElFormItem>
+        <ElFormItem label="更新时间" prop="updateTime">
+          <ElInput v-model="form.updateTime" />
+        </ElFormItem>
+        <ElFormItem label="状态">
+          <ElSwitch v-model="form.status" />
         </ElFormItem>
       </ElForm>
       <template #footer>
@@ -179,21 +190,24 @@
 
   const form = reactive<Role>({
     roleName: '',
-    roleCode: '',
-    des: '',
-    date: '',
-    enable: true
+    createBy: '',
+    createTime: '',
+    updateBy: '',
+    updateTime: '',
+    remark: '',
+    status: true
   })
 
-  const roleList = ref<Api.Role.RoleListData>()
+  const roleList = ref<Api.Role.RoleListData[]>([])
   onMounted(() => {
     getTableData()
   })
 
   const getTableData = async () => {
     roleList.value = await RoleService.getRoleList({
-      username: 'admin'
+      roleName: form.roleName
     })
+    console.log(roleList.value)
   }
 
   const dialogType = ref('add')
@@ -204,16 +218,8 @@
 
     if (type === 'edit' && row) {
       form.roleName = row.roleName
-      form.roleCode = row.roleCode
-      form.des = row.des
-      form.date = row.date
-      form.enable = row.enable
     } else {
       form.roleName = ''
-      form.roleCode = ''
-      form.des = ''
-      form.date = ''
-      form.enable = true
     }
   }
 
@@ -321,18 +327,18 @@
     isSelectAll.value = checkedKeys.length === allKeys.length && allKeys.length > 0
   }
 
-  const formatDate = (date: string) => {
-    return new Date(date)
-      .toLocaleString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      })
-      .replace(/\//g, '-')
-  }
+  // const formatDate = (date: string) => {
+  //   return new Date(date)
+  //     .toLocaleString('zh-CN', {
+  //       year: 'numeric',
+  //       month: '2-digit',
+  //       day: '2-digit',
+  //       hour: '2-digit',
+  //       minute: '2-digit',
+  //       second: '2-digit'
+  //     })
+  //     .replace(/\//g, '-')
+  // }
 </script>
 
 <style lang="scss" scoped>

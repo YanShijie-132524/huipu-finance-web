@@ -5,13 +5,24 @@ declare namespace Api {
   namespace Role {
     interface RoleListData {
       roleName: string
-      roleCode: string
-      des: string
-      date: string
-      enable: boolean
+      status: boolean
+      createBy: string
+      createTime: string
+      updateBy: string
+      updateTime: string
+      remark: string
     }
     interface RoleParams {
-      username: string
+      roleName: string
+    }
+    interface Role {
+      roleName: string
+      createBy?: string
+      createTime?: string
+      updateBy?: string
+      updateTime?: string
+      status: string
+      remark: string
     }
   }
 }
